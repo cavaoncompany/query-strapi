@@ -8,7 +8,7 @@
             id="email"
             v-model="email"
             type="email"
-            autofocus="true"
+            :autofocus="autofocus"
             placeholder="Enter your email"
             required/>
         </div>
@@ -20,7 +20,7 @@
             label="password"
             type="password"
             class="form-control"
-            autofocus="true"
+            :autofocus="autofocus"
             placeholder="Enter your password"
             required/>
         </div>
@@ -46,7 +46,8 @@ export default {
     return {
       email: '',
       password: '',
-      loading: false
+      loading: false,
+      autofocus: true
     }
   },
   methods: {
@@ -56,6 +57,7 @@ export default {
         const response = await strapi.login(this.email, this.password)
         this.loading = false
         this.setUser(response.user)
+        this.setToken(response.jwt)
         this.$router.go(-1)
       } catch (err) {
         this.loading = false
@@ -63,7 +65,8 @@ export default {
       }
     },
     ...mapMutations({
-      setUser: 'auth/setUser'
+      setUser: 'auth/setUser',
+      setToken: 'auth/setToken'
     })
   }
 }

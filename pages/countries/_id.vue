@@ -14,6 +14,7 @@
                                 <button @click="addToCart(countrytranslation)" class="btn btn-primary">Add to cart</button>
                             </div>
                         </div>
+                        <button @click="createTranslation" class="btn btn-primary">Create translation</button>
                     </div>
                 </div>
                 <div class="col-md-4">

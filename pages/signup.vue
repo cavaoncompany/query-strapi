@@ -72,6 +72,7 @@ export default {
         )
         this.loading = false
         this.setUser(response.user)
+        this.setToken(response.jwt)
         this.$router.push('/')
       } catch (err) {
         this.loading = false
@@ -79,7 +80,8 @@ export default {
       }
     },
     ...mapMutations({
-      setUser: 'auth/setUser'
+      setUser: 'auth/setUser',
+      setToken: 'auth/setToken'
     })
   }
 }
