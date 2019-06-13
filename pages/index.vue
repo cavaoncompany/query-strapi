@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="mt-3">
-          <router-link :to="{ name: 'countries-addCountry'}" tag="a" class="btn btn-primary">Add country</router-link>
+          <router-link :to="{ name: 'countries-addCountry'}" tag="a" class="btn btn-success">Add country</router-link>
         </div>
         <div class="form-group mt-3">
           <input v-model="query" type="text" class="form-control" placeholder="Search...">
@@ -21,6 +21,10 @@
               <router-link :to="{ name: 'countries-id', params: { id: country.id }}" tag="a" class="btn btn-primary">
                 See translations
               </router-link>
+             <router-link :to="{ name: 'countries-id-updateCountry', params: { id: country.id }}" tag="a" class="btn btn-warning">
+                Edit
+              </router-link>
+              <button @click="deleteCountry(country.id, country.name)" class="btn btn-danger">Delete</button>
             </div>
           </li>
           <p v-if="!filteredList.length">No results :(</p>
@@ -41,7 +45,8 @@ export default {
   components: {},
   data() {
     return {
-      query: ''
+      query: '',
+      loading: false
     }
   },
   computed: {
@@ -79,6 +84,21 @@ export default {
         ...country
       })
     })
+  },
+  methods: {
+    async deleteCountry(id, name) {
+      this.loading = true
+      try {
+        await strapi.deleteEntry('countries', {
+          id: id
+        })
+        alert(name + ' has been deleted')
+        this.$router.push('/')
+      } catch (err) {
+        this.loading = false
+        alert('An error occurred: ' + err)
+      }
+    }
   }
 }
 </script>

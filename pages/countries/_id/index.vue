@@ -41,7 +41,7 @@
 
 <script>
 import Strapi from 'strapi-sdk-javascript/build/main'
-import { mapMutations } from 'vuex';
+import { mapMutations } from 'vuex'
 const apiURL = process.env.API_URL || 'http://localhost:1337'
 const strapi = new Strapi(apiURL)
 

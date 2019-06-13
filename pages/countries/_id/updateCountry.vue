@@ -1,7 +1,7 @@
 <template>
     <section class="container">
         <div>
-            <h1 class="mt-2">Add country</h1>
+            <h1 class="mt-2">Update {{ country.name }}</h1>
             <div class="row">
                 <div class="col-md-6 offset-md-3 mt-3">
                     <form autocomplete="off" @submit.stop.prevent="handleSubmit">
@@ -9,10 +9,10 @@
                             <label for="countryName">Name</label>
                             <b-form-input
                                 id="countryName"
-                                v-model="countryName"
+                                :placeholder="country.name"
+                                :value="country.name"
                                 type="text"
                                 :autofocus="autofocus"
-                                placeholder="Name of country"
                                 required 
                             />
                         </div>
@@ -24,6 +24,7 @@
                                 type="text"
                                 :autofocus="autofocus"
                                 placeholder="Nationality"
+                                :value="country.nationality"
                                 required 
                             />
                         </div>
@@ -35,6 +36,7 @@
                                 type="text"
                                 :autofocus="autofocus"
                                 placeholder="Coutntry code"
+                                :value="country.code"
                                 required 
                             />
                         </div>
@@ -62,11 +64,20 @@ export default {
             autofocus: true
         }
     },
+    computed: {
+        id() {
+            return this.$route.params.id
+        },
+        country() {
+            return this.$store.getters['countries/country']
+        }
+    },
     methods: {
     async handleSubmit() {
       this.loading = true
       try {
-        await strapi.createEntry('countries', {
+        await strapi.updateEntry('countries', {
+          id: this.$route.params.id,
           name: this.countryName,
           nationality: this.nationality,
           code: this.countryCode
@@ -78,6 +89,25 @@ export default {
         alert('An error occurred: ' + err)
       }
     }
+  },
+  async fetch({ store, params }) {
+      store.commit('countries/emptyList')
+      const response = await strapi.request('post', '/graphql', {
+          data: {
+              query: `query {
+                country(id: "${params.id}") {
+                    id
+                    name
+                    nationality
+                    code
+                }
+            }`
+          }
+      })
+      store.commit('countries/countryAdd', {
+          id: response.data.country.id,
+          ...response.data.country
+      })
   }
 }
 </script>
